@@ -1,7 +1,7 @@
 import './index.css';
 import { initialCards } from './components/cards.js';
-import { createCard } from './components/card.js';
-import { openModal, closeModal } from './components/modal.js';
+import { createCard, removeCard, like } from './components/card.js';
+import { openModal, closeModal, closeByClick, addEscListener } from './components/modal.js';
 
 const cardTemplate = document.querySelector('#card-template').content,
       placesList = document.querySelector('.places__list'),
@@ -35,19 +35,9 @@ function handlePlaceFormSubmit(e) {
     name: placeFormName.value,
     link: placeFormLink.value
   }
-  placesList.prepend( createCard(newCard, cardTemplate, openImagePopup) );
-  placeFormName.value = placeFormLink.value = '';
+  placesList.prepend( createCard(newCard, cardTemplate, removeCard, like, openImagePopup) );
+  placeForm.reset();
   closeModal(popupNewCard);
-}
-
-function addEscListener (element) {
-  document.addEventListener('keydown', close);
-  function close (e) {
-    if (e.key === 'Escape') {
-      closeModal(element);
-      document.removeEventListener('keydown', close);
-    }
-  }
 }
 
 profileEditButton.addEventListener('click', () => {
@@ -76,15 +66,9 @@ function openImagePopup (src, alt, textContent) {
 
 popups.forEach(popup => {
   popup.classList.add('popup_is-animated');
-  popup.addEventListener('click', e => {
-    if ( e.target.classList.contains('popup__close')
-      || e.target.classList.contains('popup')
-    ) {
-      closeModal(popup);
-    }
-  })
+  popup.addEventListener('click', closeByClick)
 })
 
 initialCards.forEach(initialCard => {
-  placesList.append( createCard(initialCard, cardTemplate, openImagePopup) );
+  placesList.append( createCard(initialCard, cardTemplate, removeCard, like, openImagePopup) );
 })

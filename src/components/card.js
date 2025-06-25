@@ -6,7 +6,7 @@ function like (element) {
   element.classList.toggle('card__like-button_is-active');
 }
 
-function createCard (card, cardTemplate, openImagePopup) {
+function createCard (card, cardTemplate, removeCard, like, openImagePopup) {
   const newPlacesItem = cardTemplate.querySelector('.places__item').cloneNode(true),
         cardImage = newPlacesItem.querySelector('.card__image'),
         cardTitle = newPlacesItem.querySelector('.card__title'),
@@ -32,4 +32,4 @@ function createCard (card, cardTemplate, openImagePopup) {
   return newPlacesItem;
 }
 
-export { createCard };
+export { createCard, removeCard, like };
