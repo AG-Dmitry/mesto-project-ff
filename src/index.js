@@ -28,6 +28,8 @@ const cardTemplate = document.querySelector('#card-template').content,
       popupImage = document.querySelector('.popup_type_image'),
       popupImagePicture = popupImage.querySelector('.popup__image'),
       popupImageText = popupImage.querySelector('.popup__caption'),
+      popupConfirmation = document.querySelector('.popup_type_confirmation'),
+      popupConfirmationButton = popupConfirmation.querySelector('.popup__button'),
       buttonDisabledClass = 'popup__button_disabled',
       popupIsAnimatedClass = 'popup_is-animated',
       altBttonText = 'Сохранение...';
@@ -83,7 +85,7 @@ function handlePlaceFormSubmit(e) {
     postCard(placeFormName.value, placeFormLink.value)
       .then(card => {
         placesList.prepend(
-          createCard(card, cardTemplate, userId, deleteCard, likeCard, openImagePopup)
+          createCard(card, cardTemplate, userId, deleteCard, likeCard, openImagePopup, confirmDeletion)
         )
         e.submitter.textContent = mainButtonText;
         placeForm.reset();
@@ -99,6 +101,22 @@ function openImagePopup (src, alt, textContent) {
   popupImagePicture.src = src;
   popupImagePicture.alt = alt;
   popupImageText.textContent = textContent;
+}
+
+function confirmDeletion () {
+  return new Promise((resolve, reject) => {
+    const rejectionInterval = setInterval(() => {
+      if (!popupConfirmation.classList.contains('popup_is-opened')) {
+        reject();
+        clearInterval(rejectionInterval);
+      }
+    }, 1000)
+    openModal(popupConfirmation);
+    popupConfirmationButton.addEventListener('click', () => {
+      closeModal(popupConfirmation);
+      resolve();
+    })
+  })
 }
 
 // #endregion
@@ -148,7 +166,7 @@ Promise.all([getUserInfo(), getCards()])
     userId = userInfo._id;
     cards.forEach(card => {
       placesList.append(
-        createCard(card, cardTemplate, userId, deleteCard, likeCard, openImagePopup)
+        createCard(card, cardTemplate, userId, deleteCard, likeCard, openImagePopup, confirmDeletion)
       )
     })
   })

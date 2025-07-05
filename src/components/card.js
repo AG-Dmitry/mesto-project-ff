@@ -1,4 +1,4 @@
-function createCard (card, cardTemplate, userId, deleteCard, likeCard, openImagePopup) {
+function createCard (card, cardTemplate, userId, deleteCard, likeCard, openImagePopup, confirmDeletion) {
   const newPlacesItem = cardTemplate.querySelector('.places__item').cloneNode(true),
         cardImage = newPlacesItem.querySelector('.card__image'),
         cardTitle = newPlacesItem.querySelector('.card__title'),
@@ -23,7 +23,9 @@ function createCard (card, cardTemplate, userId, deleteCard, likeCard, openImage
   }
 
   deleteButton.addEventListener('click', () => {
-    deleteCard(newPlacesItem);
+    confirmDeletion()
+      .then(() => deleteCard(newPlacesItem))
+      .catch(err => {})
   })
 
   likeButton.addEventListener('click', () => {
