@@ -24,8 +24,9 @@ function createCard (card, cardTemplate, userId, deleteCard, likeCard, openImage
 
   deleteButton.addEventListener('click', () => {
     confirmDeletion()
-      .then(() => deleteCard(newPlacesItem))
-      .catch(err => {})
+      .then(isConfirmed => {
+        if (isConfirmed) deleteCard(newPlacesItem);
+      })
   })
 
   likeButton.addEventListener('click', () => {

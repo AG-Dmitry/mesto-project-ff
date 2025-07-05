@@ -32,6 +32,7 @@ const cardTemplate = document.querySelector('#card-template').content,
       popupConfirmationButton = popupConfirmation.querySelector('.popup__button'),
       buttonDisabledClass = 'popup__button_disabled',
       popupIsAnimatedClass = 'popup_is-animated',
+      popipIsOpened = 'popup_is-opened',
       altBttonText = 'Сохранение...';
 
 const validationConfig = {
@@ -104,17 +105,22 @@ function openImagePopup (src, alt, textContent) {
 }
 
 function confirmDeletion () {
-  return new Promise((resolve, reject) => {
-    const rejectionInterval = setInterval(() => {
-      if (!popupConfirmation.classList.contains('popup_is-opened')) {
-        reject();
-        clearInterval(rejectionInterval);
-      }
-    }, 1000)
+  return new Promise((resolve) => {
+    let isConfirmed = false;
     openModal(popupConfirmation);
     popupConfirmationButton.addEventListener('click', () => {
+      isConfirmed = true;
       closeModal(popupConfirmation);
-      resolve();
+    })
+    const observer = new MutationObserver(() => {
+      if (!popupConfirmation.classList.contains(popipIsOpened)) {
+        observer.disconnect();
+        setTimeout(() => resolve(isConfirmed), 0);
+      }
+    })
+    observer.observe(popupConfirmation, {
+      attributes: true,
+      attributeFilter: ['class']
     })
   })
 }
