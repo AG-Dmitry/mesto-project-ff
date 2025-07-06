@@ -91,10 +91,7 @@ function deleteCard (card) {
     headers: config.headers
   })
   .then(res => {
-    if (res.ok) {
-      card.remove();
-      return;
-    }
+    if (res.ok) return;
     return Promise.reject(`Ошибка: ${res.status}`);
   })
   .catch(err => {
@@ -102,20 +99,16 @@ function deleteCard (card) {
   })
 }
 
-function likeCard (card, button, counter, isActiveClass) {
+function likeCard (card, button, isActiveClass) {
   const currentMethod = button.classList.contains(isActiveClass) ? 'DELETE' : 'PUT';
   return fetch(`${config.baseUrl}/cards/likes/${card.id}`, {
     method: currentMethod,
     headers: config.headers
   })
   .then(res => {
-    if (res.ok) {
-      button.classList.toggle(isActiveClass);
-      return res.json();
-    }
+    if (res.ok) return res.json();
     return Promise.reject(`Ошибка: ${res.status}`);
   })
-  .then(card => counter.textContent = card.likes.length)
   .catch(err => {
     console.log(err);
   })

@@ -1,3 +1,18 @@
+function like (currentCard, button, isActiveClass, counter, likeCard) {
+  likeCard(currentCard, button, isActiveClass)
+    .then (updatedCard => {
+      button.classList.toggle(isActiveClass);
+      counter.textContent = updatedCard.likes.length;
+    })
+}
+
+function remove (card, deleteCard, confirmDeletion) {
+  confirmDeletion()
+    .then(isConfirmed => {
+      if (isConfirmed) deleteCard(card).then(card.remove());
+    })
+}
+
 function createCard (card, cardTemplate, userId, deleteCard, likeCard, openImagePopup, confirmDeletion) {
   const newPlacesItem = cardTemplate.querySelector('.places__item').cloneNode(true),
         cardImage = newPlacesItem.querySelector('.card__image'),
@@ -23,14 +38,11 @@ function createCard (card, cardTemplate, userId, deleteCard, likeCard, openImage
   }
 
   deleteButton.addEventListener('click', () => {
-    confirmDeletion()
-      .then(isConfirmed => {
-        if (isConfirmed) deleteCard(newPlacesItem);
-      })
+    remove(newPlacesItem, deleteCard, confirmDeletion);
   })
 
   likeButton.addEventListener('click', () => {
-    likeCard(newPlacesItem, likeButton, likeCounter, isActiveLikeClass);
+    like(newPlacesItem, likeButton, isActiveLikeClass, likeCounter, likeCard);
   })
 
   cardImage.addEventListener('click', () => {
