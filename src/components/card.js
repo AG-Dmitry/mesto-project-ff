@@ -4,13 +4,19 @@ function like (currentCard, button, isActiveClass, counter, likeCard) {
       button.classList.toggle(isActiveClass);
       counter.textContent = updatedCard.likes.length;
     })
+    .catch(err => console.log(err));
 }
 
 function remove (card, deleteCard, confirmDeletion) {
   confirmDeletion()
     .then(isConfirmed => {
-      if (isConfirmed) deleteCard(card).then(card.remove());
+      if (isConfirmed) {
+        deleteCard(card)
+          .then(card.remove())
+          .catch(err => console.log(err));
+      }
     })
+    .catch(err => console.log(err));
 }
 
 function createCard (card, cardTemplate, userId, deleteCard, likeCard, openImagePopup, confirmDeletion) {

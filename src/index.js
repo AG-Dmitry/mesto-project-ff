@@ -51,21 +51,23 @@ let userId;
 // #region Functions
 
 function handleAvatarFormSubmit(e) {
+  e.preventDefault();
   if (!e.submitter.classList.contains(buttonDisabledClass)) {
     const mainButtonText = e.submitter.textContent;
     e.submitter.textContent = altBttonText;
     patchUserAvatar(avatarFormLink.value)
       .then(userInfo => {
         profileAvatar.style.backgroundImage = `url(${userInfo.avatar})`;
-        e.submitter.textContent = mainButtonText;
         avatarForm.reset();
-        clearValidation(popupAvatar, validationConfig);
         closeModal(popupAvatar);
       })
+      .catch(err => console.log(err))
+      .finally(e.submitter.textContent = mainButtonText);
   }
 }
 
 function handleProfileFormSubmit(e) {
+  e.preventDefault();
   if (!e.submitter.classList.contains(buttonDisabledClass)) {
     const mainButtonText = e.submitter.textContent;
     e.submitter.textContent = altBttonText;
@@ -73,13 +75,15 @@ function handleProfileFormSubmit(e) {
       .then(userInfo => {
         profileTitle.textContent = userInfo.name;
         profileDescription.textContent = userInfo.about;
-        e.submitter.textContent = mainButtonText;
         closeModal(popupEdit);
       })
+      .catch(err => console.log(err))
+      .finally(e.submitter.textContent = mainButtonText);
   }
 }
 
 function handlePlaceFormSubmit(e) {
+  e.preventDefault();
   if (!e.submitter.classList.contains(buttonDisabledClass)) {
     const mainButtonText = e.submitter.textContent;
     e.submitter.textContent = altBttonText;
@@ -88,11 +92,11 @@ function handlePlaceFormSubmit(e) {
         placesList.prepend(
           createCard(card, cardTemplate, userId, deleteCard, likeCard, openImagePopup, confirmDeletion)
         )
-        e.submitter.textContent = mainButtonText;
         placeForm.reset();
-        clearValidation(popupNewCard, validationConfig);
         closeModal(popupNewCard);
       })
+      .catch(err => console.log(err))
+      .finally(e.submitter.textContent = mainButtonText);
   }
 }
 
@@ -104,20 +108,26 @@ function openImagePopup (src, alt, textContent) {
   popupImageText.textContent = textContent;
 }
 
+
 function confirmDeletion () {
   return new Promise((resolve) => {
     let isConfirmed = false;
-    openModal(popupConfirmation);
-    popupConfirmationButton.addEventListener('click', () => {
+    const addConfirmationFlag = () => {
       isConfirmed = true;
       closeModal(popupConfirmation);
-    })
+    }
+
+    openModal(popupConfirmation);
+    popupConfirmationButton.addEventListener('click', addConfirmationFlag);
+
     const observer = new MutationObserver(() => {
       if (!popupConfirmation.classList.contains(popipIsOpened)) {
         observer.disconnect();
-        setTimeout(() => resolve(isConfirmed), 0);
+        popupConfirmationButton.removeEventListener('click', addConfirmationFlag);
+        resolve(isConfirmed);
       }
     })
+
     observer.observe(popupConfirmation, {
       attributes: true,
       attributeFilter: ['class']
@@ -131,27 +141,29 @@ function confirmDeletion () {
 
 profileAvatar.addEventListener('click', () => {
   openModal(popupAvatar);
-  addEscListener(popupAvatar);
+  avatarFormLink.value = '';
+  clearValidation(popupAvatar, validationConfig);
 })
 
-avatarForm.addEventListener('submit', handleAvatarFormSubmit);
+avatarForm.addEventListener('submit', handleAvatarFormSubmit)
 
 profileEditButton.addEventListener('click', () => {
   openModal(popupEdit);
   profileFormName.value = profileTitle.textContent;
   profileFormDescription.value = profileDescription.textContent;
   clearValidation(popupEdit, validationConfig);
-  addEscListener(popupEdit);
 })
 
-profileForm.addEventListener('submit', handleProfileFormSubmit);
+profileForm.addEventListener('submit', handleProfileFormSubmit)
 
 profileAddButton.addEventListener('click', () => {
   openModal(popupNewCard);
-  addEscListener(popupNewCard);
+  placeFormName.value = '';
+  placeFormLink.value = '';
+  clearValidation(popupNewCard, validationConfig);
 })
 
-placeForm.addEventListener('submit', handlePlaceFormSubmit);
+placeForm.addEventListener('submit', handlePlaceFormSubmit)
 
 // #endregion
 
@@ -176,5 +188,6 @@ Promise.all([getUserInfo(), getCards()])
       )
     })
   })
+  .catch(err => console.log(err));
 
 // #endregion

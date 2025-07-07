@@ -6,30 +6,23 @@ const config = {
   }
 }
 
+function getResponseData (res) {
+  if (res.ok) return res.json();
+  return Promise.reject(`Ошибка: ${res.status}`);
+}
+
 function getUserInfo () {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
   })
-  .then(res => {
-    if (res.ok) return res.json();
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
-  .catch(err => {
-    console.log(err);
-  })
+  .then(res => getResponseData(res));
 }
 
 function getCards () {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
   })
-  .then(res => {
-    if (res.ok) return res.json();
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
-  .catch(err => {
-    console.log(err);
-  })
+  .then(res => getResponseData(res));
 }
 
 function patchUserAvatar (link) {
@@ -40,13 +33,7 @@ function patchUserAvatar (link) {
       avatar: link
     })
   })
-  .then(res => {
-    if (res.ok) return res.json();
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
-  .catch(err => {
-    console.log(err);
-  })
+  .then(res => getResponseData(res));
 }
 
 function patchUserInfo (name, about) {
@@ -58,13 +45,7 @@ function patchUserInfo (name, about) {
       about: about
     })
   })
-  .then(res => {
-    if (res.ok) return res.json();
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
-  .catch(err => {
-    console.log(err);
-  })
+  .then(res => getResponseData(res));
 }
 
 function postCard (name, link) {
@@ -76,13 +57,7 @@ function postCard (name, link) {
       link: link
     })
   })
-  .then(res => {
-    if (res.ok) return res.json();
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
-  .catch(err => {
-    console.log(err);
-  })
+  .then(res => getResponseData(res));
 }
 
 function deleteCard (card) {
@@ -90,13 +65,7 @@ function deleteCard (card) {
     method: 'DELETE',
     headers: config.headers
   })
-  .then(res => {
-    if (res.ok) return;
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
-  .catch(err => {
-    console.log(err);
-  })
+  .then(res => getResponseData(res));
 }
 
 function likeCard (card, button, isActiveClass) {
@@ -105,13 +74,7 @@ function likeCard (card, button, isActiveClass) {
     method: currentMethod,
     headers: config.headers
   })
-  .then(res => {
-    if (res.ok) return res.json();
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
-  .catch(err => {
-    console.log(err);
-  })
+  .then(res => getResponseData(res));
 }
 
 export { getUserInfo, getCards, patchUserAvatar, patchUserInfo, postCard, deleteCard, likeCard };

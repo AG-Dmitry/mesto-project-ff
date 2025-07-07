@@ -3,7 +3,6 @@ function enableValidation (validationConfig) {
   forms.forEach(form => {
     const inputList = Array.from(form.querySelectorAll(validationConfig.inputSelector));
     const button = form.querySelector(validationConfig.submitButtonSelector);
-    form.addEventListener('submit', e => e.preventDefault());
     inputList.forEach(inputElement => {
       inputElement.addEventListener('input', function () {
         checkInputValidity(form, inputElement, validationConfig);
@@ -49,11 +48,21 @@ function hasInvalidInput (inputList) {
   return inputList.some(inputElement => !inputElement.validity.valid)
 }
 
+function disableSubmitButton (button, validationConfig) {
+  button.classList.add(validationConfig.inactiveButtonClass);
+  button.disabled = true;
+};
+
+function enableSubmitButton (button, validationConfig) {
+  button.classList.remove(validationConfig.inactiveButtonClass);
+  button.disabled = false;
+};
+
 function toggleButtonState (inputList, button, validationConfig) {
   if (hasInvalidInput(inputList)) {
-    button.classList.add(validationConfig.inactiveButtonClass);
+    disableSubmitButton(button, validationConfig);
   } else {
-    button.classList.remove(validationConfig.inactiveButtonClass);
+    enableSubmitButton(button, validationConfig);
   }
 }
 
