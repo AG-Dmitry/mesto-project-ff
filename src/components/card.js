@@ -12,7 +12,7 @@ function remove (card, deleteCard, confirmDeletion) {
     .then(isConfirmed => {
       if (isConfirmed) {
         deleteCard(card)
-          .then(card.remove())
+          .then(() => card.remove())
           .catch(err => console.log(err));
       }
     })
