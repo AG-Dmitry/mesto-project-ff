@@ -16,7 +16,7 @@ function clearValidation (form, validationConfig) {
   const inputList = Array.from(form.querySelectorAll(validationConfig.inputSelector));
   const button = form.querySelector(validationConfig.submitButtonSelector);
   inputList.forEach(inputElement => hideInputError(form, inputElement, validationConfig));
-  disableSubmitButton(button, validationConfig);
+  toggleButtonState (inputList, button, validationConfig);
 }
 
 function checkInputValidity (form, inputElement, validationConfig) {
